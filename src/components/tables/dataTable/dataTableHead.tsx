@@ -1,4 +1,3 @@
-import {Tenant} from "../../types/api";
 import * as React from "react";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
@@ -7,62 +6,32 @@ import Checkbox from "@mui/material/Checkbox";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import Box from "@mui/material/Box";
 import {visuallyHidden} from "@mui/utils";
-import {Order} from "./tenantsTable.tsx";
+import {Order} from "./dataTable.tsx";
+import {ChangeEvent} from "react";
+import {HeadCell} from "../../../types/table";
 
-interface EnhancedTableProps {
+interface DataTableHeadProps<TData> {
     numSelected: number;
-    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof Tenant) => void;
-    onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onRequestSort: (event: React.MouseEvent<unknown>, property: keyof TData) => void;
+    onSelectAllClick: (event: ChangeEvent<HTMLInputElement>) => void;
     order: Order;
-    orderBy: string;
+    orderBy: keyof TData;
     rowCount: number;
+    headCells: HeadCell<TData>[]
 }
 
-interface HeadCell {
-    disablePadding: boolean;
-    id: keyof Tenant;
-    label: string;
-    numeric: boolean;
-}
+export default function DataTableHead<TData>({
+                                                    headCells,
+                                                    orderBy,
+                                                    order,
+                                                    onSelectAllClick,
+                                                    numSelected,
+                                                    rowCount,
+                                                    onRequestSort
+                                                }: DataTableHeadProps<TData>) {
 
-const headCells: HeadCell[] = [
-    {
-        id: 'id',
-        numeric: false,
-        disablePadding: true,
-        label: 'Id',
-    },
-    {
-        id: 'name',
-        numeric: false,
-        disablePadding: true,
-        label: 'Name',
-    },
-    {
-        id: 'email',
-        numeric: false,
-        disablePadding: false,
-        label: 'Email',
-    },
-    {
-        id: 'created',
-        numeric: false,
-        disablePadding: false,
-        label: 'Created',
-    },
-    {
-        id: 'expire',
-        numeric: false,
-        disablePadding: false,
-        label: 'Expires',
-    }
-];
-
-export default function TenantsTableHead(props: EnhancedTableProps) {
-    const {onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort} =
-        props;
     const createSortHandler =
-        (property: keyof Tenant) => (event: React.MouseEvent<unknown>) => {
+        (property: keyof TData) => (event: React.MouseEvent<unknown>) => {
             onRequestSort(event, property);
         };
 
@@ -80,9 +49,9 @@ export default function TenantsTableHead(props: EnhancedTableProps) {
                         }}
                     />
                 </TableCell>
-                {headCells.map((headCell) => (
+                {headCells.map((headCell, index) => (
                     <TableCell
-                        key={headCell.id}
+                        key={index}
                         align={headCell.numeric ? 'right' : 'left'}
                         padding={headCell.disablePadding ? 'none' : 'normal'}
                         sortDirection={orderBy === headCell.id ? order : false}

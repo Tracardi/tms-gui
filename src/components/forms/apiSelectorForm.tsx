@@ -49,7 +49,9 @@ export default function ApiSelectorForm() {
                         {mutation.isLoading ? <CircularProgress size={24}/> :
                             <Typography component="p" sx={{fontSize: 16}}>Sign in</Typography>}
                     </Button>
-                    {mutation.isError && <Typography color="error" component="p"><MdError/></Typography>}
+                    {mutation.isError && <Typography color="error" component="p" sx={{display: "flex", alignItems: "center", gap: "0.4rem"}}>
+                        <MdError/> Could not get token from api.
+                    </Typography>}
                 </Grid>
             </Grid>
         </form>

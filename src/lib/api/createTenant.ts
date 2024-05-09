@@ -2,7 +2,7 @@ import {CreateTenantBody, Tenant, ValidationError} from "../../types/api";
 import {AxiosResponse} from "axios";
 import {fetchWithToken} from "../fetchWithToken.ts";
 
-interface CreateTenantParams {
+export interface CreateTenantParams {
     accessToken: string,
     prefixUrl: string,
     body: CreateTenantBody

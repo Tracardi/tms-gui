@@ -28,3 +28,9 @@ export interface ValidationError {
     msg: string,
     type: string
 }
+
+export interface DeleteFnParams {
+    id: string,
+    accessToken: string,
+    prefixUrl: string
+}

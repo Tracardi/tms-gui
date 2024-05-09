@@ -4,19 +4,16 @@ import Typography from "@mui/material/Typography";
 import Tooltip from "@mui/material/Tooltip";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import {Button} from "@mui/material";
-import useTenantsContext from "../../hooks/useTenantsContext.ts";
 
-interface EnhancedTableToolbarProps {
+interface DataTableToolbarProps {
+    title: string;
     numSelected: number;
-    deleteTenantHandler: () => void;
+    deleteHandler: () => void;
+    onCreateBtnClick: () => void;
 }
 
-export default function TenantsTableToolbar(props: EnhancedTableToolbarProps) {
-    const {numSelected, deleteTenantHandler} = props;
-
-    const {openCreateTenantDialog} = useTenantsContext()
+export default function DataTableToolbar({title, numSelected, deleteHandler, onCreateBtnClick}: DataTableToolbarProps) {
 
     return (
         <Toolbar
@@ -45,23 +42,17 @@ export default function TenantsTableToolbar(props: EnhancedTableToolbarProps) {
                     id="tableTitle"
                     component="div"
                 >
-                    Tenants Table
+                    {title}
                 </Typography>
             )}
-            {numSelected > 0 ? (
+            {numSelected > 0 && (
                 <Tooltip title="Delete">
-                    <IconButton onClick={deleteTenantHandler}>
+                    <IconButton onClick={deleteHandler}>
                         <DeleteIcon/>
                     </IconButton>
                 </Tooltip>
-            ) : (
-                <Tooltip title="Filter list">
-                    <IconButton>
-                        <FilterListIcon/>
-                    </IconButton>
-                </Tooltip>
             )}
-            <Button onClick={openCreateTenantDialog} variant="contained" sx={{mx: 2, py: 0.6}}>Create</Button>
+            <Button onClick={onCreateBtnClick} variant="contained" sx={{mx: 2, py: 0.6}}>Create</Button>
         </Toolbar>
     );
 }

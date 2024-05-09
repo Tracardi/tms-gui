@@ -1,20 +1,14 @@
 import {fetchWithToken} from "../fetchWithToken.ts";
 import {AxiosResponse} from "axios";
-import {ValidationError} from "../../types/api";
-
-interface DeleteTenantParams {
-    prefixUrl: string,
-    accessToken: string,
-    tenantId: string
-}
+import {DeleteFnParams, ValidationError} from "../../types/api";
 
 export function deleteTenant({
                                  prefixUrl,
                                  accessToken,
-                                 tenantId
-                             }: DeleteTenantParams): Promise<AxiosResponse<string, ValidationError>> {
+                                 id
+                             }: DeleteFnParams): Promise<AxiosResponse<string, ValidationError>> {
     return fetchWithToken({
-        url: `${prefixUrl}/tenant/${tenantId}`, accessToken, options: {
+        url: `${prefixUrl}/tenant/${id}`, accessToken, options: {
             method: "DELETE"
         }
     })

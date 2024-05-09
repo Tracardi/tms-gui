@@ -1,24 +1,48 @@
-import * as React from "react";
 import {CircularProgress} from "@mui/material";
 import useApiAuthContext from "../hooks/useApiAuthContext.ts";
 import {useQuery} from "react-query";
 import {getTenants} from "../lib/api/getTenants.ts";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
-import TenantsTable from "../components/tables/tenantsTable.tsx";
-import CreateTenantDialog from "../components/dialogs/createTenantDialog.tsx";
-import useTenantsContext from "../hooks/useTenantsContext.ts";
 import {useState} from "react";
-import TenantDetailsDialog from "../components/dialogs/TenantDetailsDialog";
+import {DeleteFnParams, Tenant, ValidationError} from "../types/api";
+import {AxiosResponse} from "axios";
+import TenantsTable from "../components/tables/tenantsTable.tsx";
+import TenantDetailsDialog from "../components/dialogs/tenantDetailsDialog.tsx";
 
 export default function TenantsPage() {
 
     const {apiPrefix, accessToken} = useApiAuthContext()
-    const {addTenants} = useTenantsContext()
-    const [currentTenant, setCurrentTenant] = useState(null)
+
+    const [tenants, setTenants] = useState<Tenant[]>([])
+    const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null)
     const [openDetails, setOpenDetails] = useState(false)
 
-    const handleRowClick = (tenant) => {
+    const handleTenantDeletion = (_res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => {
+        const {id} = variables
+
+        setTenants(prevState => {
+            return prevState.filter(tenant => tenant.id !== id)
+        })
+    }
+
+    const handleOpenTenantDetails = () => {
+        setCurrentTenant(null)
+        setOpenDetails(true)
+    }
+
+    const handleTenantsUpdate = (res: AxiosResponse<Tenant, ValidationError>) => {
+        setTenants(prevState => {
+
+            const filteredTenants = prevState.filter(tenant => tenant.id !== res.data.id)
+
+            return [...filteredTenants, res.data]
+        })
+
+        setOpenDetails(false)
+    }
+
+    const handleRowClick = (tenant: Tenant) => {
         setCurrentTenant(tenant)
         setOpenDetails(true)
     }
@@ -27,7 +51,7 @@ export default function TenantsPage() {
         queryKey: ["tenants"], queryFn: () => {
             return getTenants({prefixUrl: apiPrefix, accessToken: accessToken})
         }, onSuccess: res => {
-            addTenants(res.data)
+            setTenants(res.data)
         }
     })
 
@@ -46,9 +70,10 @@ export default function TenantsPage() {
 
     return (
         <Box sx={{m: 0, p: 2, width: "100%"}}>
-            <TenantsTable onRowClick={handleRowClick}/>
-            <CreateTenantDialog/>
-            {currentTenant && <TenantDetailsDialog open={openDetails} onClose={() => setOpenDetails(false)} value={currentTenant}/>}
+            <TenantsTable data={tenants} onRowClick={handleRowClick} onCreateBtnClick={handleOpenTenantDetails}
+                          onDeleteSuccess={handleTenantDeletion}/>
+            <TenantDetailsDialog open={openDetails} onClose={() => setOpenDetails(false)} value={currentTenant}
+                                 onSuccess={handleTenantsUpdate}/>
         </Box>
     )
 }

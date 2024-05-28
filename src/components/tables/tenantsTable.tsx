@@ -8,10 +8,11 @@ interface TenantsTableProps {
     data: Tenant[],
     onRowClick: (tenant: Tenant) => void,
     onCreateBtnClick: () => void,
-    onDeleteSuccess: (res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => void
+    onDeleteSuccess: (res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => void,
+    onDeleteError: () => void
 }
 
-export default function TenantsTable({data, onRowClick, onCreateBtnClick, onDeleteSuccess}: TenantsTableProps) {
+export default function TenantsTable({data, onRowClick, onCreateBtnClick, onDeleteSuccess, onDeleteError}: TenantsTableProps) {
 
     const headCells: HeadCell<Tenant>[] = [
         {
@@ -54,7 +55,7 @@ export default function TenantsTable({data, onRowClick, onCreateBtnClick, onDele
 
     return (
         <DataTable onRowClick={onRowClick} data={data} title={title} deleteFn={deleteTenant}
-                   deleteTooltipTitle="Delete tenant" editTooltipTitle="Tenant details"
+                   deleteTooltipTitle="Delete tenant" editTooltipTitle="Tenant details" onDeleteError={onDeleteError}
                    onDeleteSuccess={onDeleteSuccess} onCreateBtnClick={onCreateBtnClick} headCells={headCells}
                    warningDialogText="The tenant/tenants data will be erased."
                    warningDialogTitle="Delete Tenant/Tenants"/>

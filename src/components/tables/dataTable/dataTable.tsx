@@ -8,7 +8,7 @@ import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import Checkbox from '@mui/material/Checkbox';
 import React, {ChangeEvent, useState} from "react";
-import {useMutation} from "react-query";
+import {useMutation} from "@tanstack/react-query";
 import useApiAuthContext from "../../../hooks/useApiAuthContext.ts";
 import DataTableHead from "./dataTableHead.tsx";
 import DataTableToolbar from "./dataTableToolbar.tsx";
@@ -57,6 +57,7 @@ interface DataTableProps<TData> {
     warningDialogText: string,
     deleteFn: ({id, accessToken, prefixUrl}: DeleteFnParams) => Promise<AxiosResponse<string, ValidationError>>,
     onDeleteSuccess: (res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => void,
+    onDeleteError: () => void
     onCreateBtnClick: () => void,
     headCells: HeadCell<TData>[]
 }
@@ -72,7 +73,8 @@ export default function DataTable<TData extends { id: string }>({
                                                                     deleteTooltipTitle,
                                                                     editTooltipTitle,
                                                                     warningDialogTitle,
-                                                                    warningDialogText
+                                                                    warningDialogText,
+                                                                    onDeleteError
                                                                 }: DataTableProps<TData>) {
 
     const [order, setOrder] = useState<Order>('asc');
@@ -105,11 +107,18 @@ export default function DataTable<TData extends { id: string }>({
 
     const {accessToken, apiPrefix} = useApiAuthContext()
 
-    const mutation = useMutation(deleteFn, {
-        onSuccess: (data, variables) => {
+    const mutation = useMutation( {
+        mutationFn: deleteFn,
+        onSuccess: (data: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => {
             setSelected([])
             setOpenDialog(false)
             onDeleteSuccess(data, variables)
+        },
+        onError: (error) => {
+            console.error(error)
+            setSelected([])
+            setOpenDialog(false)
+            onDeleteError()
         }
     })
 
@@ -268,7 +277,8 @@ export default function DataTable<TData extends { id: string }>({
                                                     <FaEdit/>
                                                 </IconButton>
                                             </Tooltip>
-                                            <Tooltip title={deleteTooltipTitle} onClick={() => handleRowDeleteIconClick(dataItem)}>
+                                            <Tooltip title={deleteTooltipTitle}
+                                                     onClick={() => handleRowDeleteIconClick(dataItem)}>
                                                 <IconButton size="small">
                                                     <DeleteIcon/>
                                                 </IconButton>
@@ -299,7 +309,7 @@ export default function DataTable<TData extends { id: string }>({
                     />
                 </Paper>
             </Box>
-            <DetailsDialog isForm={false} open={openDialog} onClose={() => {
+            <DetailsDialog isForm={false} isPending={mutation.isPending} open={openDialog} onClose={() => {
                 setSelected([])
                 setOpenDialog(false)
             }} onSubmit={deleteHandler} title={warningDialogTitle}>

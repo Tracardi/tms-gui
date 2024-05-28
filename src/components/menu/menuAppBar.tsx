@@ -2,7 +2,6 @@ import {AppBar} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import {MdMenu} from "react-icons/md";
-import Typography from "@mui/material/Typography";
 import {useTheme} from "@mui/material/styles";
 import ThemeSwitch from "../themeSwitch.tsx";
 
@@ -40,9 +39,6 @@ export default function MenuAppBar({open, handleDrawerOpen, drawerWidth}: MainAp
                             sx={{marginRight: 5, ...(open && {display: 'none'})}}>
                     <MdMenu/>
                 </IconButton>
-                <Typography variant="h6" noWrap component="div">
-                    Tenant
-                </Typography>
                 <ThemeSwitch/>
             </Toolbar>
         </AppBar>

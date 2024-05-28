@@ -2,7 +2,7 @@ import Grid from "@mui/material/Grid";
 import AutoCompleteInput from "../inputs/autoComplete.tsx";
 import {Button, CircularProgress, TextField} from "@mui/material";
 import {FormEvent, useState} from "react";
-import {useMutation} from "react-query";
+import {useMutation} from "@tanstack/react-query";
 import {getToken} from "../../lib/api/getToken.ts";
 import Typography from "@mui/material/Typography";
 import {MdError} from "react-icons/md";
@@ -23,7 +23,7 @@ export default function ApiSelectorForm() {
     const [url, setUrl] = useState("")
     const [apiKey, setApiKey] = useState("")
 
-    const disabled = mutation.isLoading
+    const disabled = mutation.isPending
 
     const submitHandler = (e: FormEvent) => {
         e.preventDefault()
@@ -46,7 +46,7 @@ export default function ApiSelectorForm() {
                         setApiKey(e.target.value)
                     }} label="API KEY"/>
                     <Button type="submit" variant="contained" disabled={disabled}>
-                        {mutation.isLoading ? <CircularProgress size={24}/> :
+                        {mutation.isPending ? <CircularProgress size={24}/> :
                             <Typography component="p" sx={{fontSize: 16}}>Sign in</Typography>}
                     </Button>
                     {mutation.isError && <Typography color="error" component="p" sx={{display: "flex", alignItems: "center", gap: "0.4rem"}}>

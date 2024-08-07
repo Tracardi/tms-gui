@@ -1,18 +1,19 @@
-import {CreateTenantBody, Tenant, ValidationError} from "../../types/api";
+import { IValidationError} from "../../../types/api/api";
+import { ICreateTenantBody, ITenant} from "../../../types/api/tenant";
 import {AxiosResponse} from "axios";
-import {fetchWithToken} from "../fetchWithToken.ts";
+import {fetchWithToken} from "../../fetchWithToken.ts";
 
 export interface CreateTenantParams {
     accessToken: string,
     prefixUrl: string,
-    body: CreateTenantBody
+    body: ICreateTenantBody
 }
 
 export function createTenant({
                                  accessToken,
                                  prefixUrl,
                                  body
-                             }: CreateTenantParams): Promise<AxiosResponse<Tenant, ValidationError>> {
+                             }: CreateTenantParams): Promise<AxiosResponse<ITenant, IValidationError>> {
     return fetchWithToken({
         url: `${prefixUrl}/tenant`, accessToken, options: {
             method: "POST",

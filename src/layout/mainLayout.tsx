@@ -19,7 +19,7 @@ export default function MainLayout() {
 
 
     return (
-        <Box sx={{display: 'flex'}}>
+        <Box sx={{display: 'flex', minHeight: "100vh"}}>
             <MenuAppBar open={open} handleDrawerOpen={handleDrawerOpen} drawerWidth={drawerWidth}/>
             <MenuDrawer open={open} handleDrawerClose={handleDrawerClose} drawerWidth={drawerWidth}/>
             <Box component="main" sx={{flexGrow: 1, p: 4, marginTop: "64px"}}>

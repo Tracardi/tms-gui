@@ -8,7 +8,7 @@ import Box from "@mui/material/Box";
 import {visuallyHidden} from "@mui/utils";
 import {Order} from "./dataTable.tsx";
 import {ChangeEvent} from "react";
-import {HeadCell} from "../../../types/table";
+import {HeadCell} from "../../../types/ui/table";
 
 interface DataTableHeadProps<TData> {
     numSelected: number;

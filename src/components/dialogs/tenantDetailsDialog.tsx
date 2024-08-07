@@ -1,10 +1,11 @@
 import DetailsDialog from "./detailsDialog.tsx";
 import {TextField} from "@mui/material";
-import {Tenant, ValidationError} from "../../types/api";
+import { IValidationError} from "../../types/api/api";
+import {ITenant} from "../../types/api/tenant";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {useEffect} from "react";
 import {useMutation} from "@tanstack/react-query";
-import {createTenant, CreateTenantParams} from "../../lib/api/createTenant.ts";
+import {createTenant, CreateTenantParams} from "../../lib/api/tenant/createTenant.ts";
 import useApiAuthContext from "../../hooks/useApiAuthContext.ts";
 import Typography from "@mui/material/Typography";
 import {AxiosResponse} from "axios";
@@ -13,9 +14,9 @@ import Grid from "@mui/material/Unstable_Grid2";
 interface TenantDialogProps {
     open: boolean,
     onClose: () => void,
-    onSuccess: (data: AxiosResponse<Tenant, ValidationError>, variables: CreateTenantParams) => void,
+    onSuccess: (data: AxiosResponse<ITenant, IValidationError>, variables: CreateTenantParams) => void,
     onError: () => void
-    value: Tenant | null
+    value: ITenant | null
 }
 
 interface Inputs {

@@ -1,16 +1,17 @@
 import {CircularProgress} from "@mui/material";
 import useApiAuthContext from "../hooks/useApiAuthContext.ts";
 import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getTenants} from "../lib/api/getTenants.ts";
+import {getTenants} from "../lib/api/tenant/getTenants.ts";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import {useState} from "react";
-import {DeleteFnParams, Tenant, ValidationError} from "../types/api";
+import {IDeleteFnParams, IValidationError} from "../types/api/api";
+import {ITenant} from "../types/api/tenant";
 import {AxiosResponse} from "axios";
 import TenantsTable from "../components/tables/tenantsTable.tsx";
 import TenantDetailsDialog from "../components/dialogs/tenantDetailsDialog.tsx";
 import SnackbarWithAlert from "../components/snackbarWithAlert.tsx";
-import {SnackbarData} from "../types/snackbar";
+import {SnackbarData} from "../types/ui/snackbar";
 import Paper from "@mui/material/Paper";
 
 export default function TenantsPage() {
@@ -18,7 +19,7 @@ export default function TenantsPage() {
     const {apiPrefix, accessToken} = useApiAuthContext()
     const queryClient = useQueryClient()
 
-    const [currentTenant, setCurrentTenant] = useState<Tenant | null>(null)
+    const [currentTenant, setCurrentTenant] = useState<ITenant | null>(null)
     const [openDetails, setOpenDetails] = useState(false)
     const [openSnackbar, setOpenSnackbar] = useState(false)
     const [snackbarData, setSnackbarData] = useState<SnackbarData>({
@@ -26,10 +27,10 @@ export default function TenantsPage() {
         severity: "success"
     })
 
-    const handleTenantDeletion = (_res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => {
+    const handleTenantDeletion = (_res: AxiosResponse<string, IValidationError>, variables: IDeleteFnParams) => {
         const {id} = variables
 
-        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<Tenant[], ValidationError>) => {
+        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<ITenant[], IValidationError>) => {
             const tenants = queryData.data
             const filteredTenants = tenants.filter(tenant => tenant.id !== id)
 
@@ -60,8 +61,8 @@ export default function TenantsPage() {
         setOpenDetails(true)
     }
 
-    const handleTenantsUpdate = (res: AxiosResponse<Tenant, ValidationError>) => {
-        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<Tenant[], ValidationError>) => {
+    const handleTenantsUpdate = (res: AxiosResponse<ITenant, IValidationError>) => {
+        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<ITenant[], IValidationError>) => {
             const tenants = queryData.data
             const filteredTenants = tenants.filter(tenant => tenant.id !== res.data.id)
 
@@ -87,7 +88,7 @@ export default function TenantsPage() {
         setOpenSnackbar(true)
     }
 
-    const handleRowClick = (tenant: Tenant) => {
+    const handleRowClick = (tenant: ITenant) => {
         setCurrentTenant(tenant)
         setOpenDetails(true)
     }

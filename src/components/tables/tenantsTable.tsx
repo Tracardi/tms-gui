@@ -1,20 +1,21 @@
 import DataTable from "./dataTable/dataTable.tsx";
-import {HeadCell} from "../../types/table";
-import {DeleteFnParams, Tenant, ValidationError} from "../../types/api";
-import {deleteTenant} from "../../lib/api/deleteTenant.ts";
+import {HeadCell} from "../../types/ui/table";
+import {IDeleteFnParams, IValidationError} from "../../types/api/api";
+import {ITenant} from "../../types/api/tenant";
+import {deleteTenant} from "../../lib/api/tenant/deleteTenant.ts";
 import {AxiosResponse} from "axios";
 
 interface TenantsTableProps {
-    data: Tenant[],
-    onRowClick: (tenant: Tenant) => void,
+    data: ITenant[],
+    onRowClick: (tenant: ITenant) => void,
     onCreateBtnClick: () => void,
-    onDeleteSuccess: (res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => void,
+    onDeleteSuccess: (res: AxiosResponse<string, IValidationError>, variables: IDeleteFnParams) => void,
     onDeleteError: () => void
 }
 
 export default function TenantsTable({data, onRowClick, onCreateBtnClick, onDeleteSuccess, onDeleteError}: TenantsTableProps) {
 
-    const headCells: HeadCell<Tenant>[] = [
+    const headCells: HeadCell<ITenant>[] = [
         {
             id: "id",
             numeric: false,

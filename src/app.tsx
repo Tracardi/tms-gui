@@ -7,6 +7,7 @@ import {darkTheme, lightTheme} from "./lib/theme.ts";
 import useApiAuthContext from "./hooks/useApiAuthContext.ts";
 import useThemeModeContext from "./hooks/useThemeModeContext.ts";
 import TenantsPage from "./pages/tenantsPage.tsx";
+import DashboardPage from "./pages/dashboardPage.tsx";
 
 export default function App() {
 
@@ -21,7 +22,7 @@ export default function App() {
             children: [
                 {
                     path: "/",
-                    element: <div>Home Page</div>
+                    element: <DashboardPage/>
                 },
                 {
                     path: "/tenants",

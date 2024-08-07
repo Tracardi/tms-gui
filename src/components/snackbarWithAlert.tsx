@@ -1,5 +1,5 @@
 import {Alert, Snackbar, SnackbarOrigin} from "@mui/material";
-import {SnackbarData} from "../types/snackbar";
+import {SnackbarData} from "../types/ui/snackbar";
 
 interface SnackbarWithAlertProps {
     open: boolean,

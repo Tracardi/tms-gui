@@ -11,7 +11,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import {useTheme} from "@mui/material/styles";
 import {Link} from "react-router-dom";
-import {Theme} from "../../types/theme";
+import {Theme} from "../../types/ui/theme";
 import MenuLogout from "./menuLogout.tsx";
 
 interface MainDrawerProps {

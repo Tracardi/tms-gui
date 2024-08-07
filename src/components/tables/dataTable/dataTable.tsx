@@ -12,8 +12,8 @@ import {useMutation} from "@tanstack/react-query";
 import useApiAuthContext from "../../../hooks/useApiAuthContext.ts";
 import DataTableHead from "./dataTableHead.tsx";
 import DataTableToolbar from "./dataTableToolbar.tsx";
-import {HeadCell} from "../../../types/table";
-import {DeleteFnParams, ValidationError} from "../../../types/api";
+import {HeadCell} from "../../../types/ui/table";
+import {IDeleteFnParams, IValidationError} from "../../../types/api/api";
 import {AxiosResponse} from "axios";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -55,8 +55,8 @@ interface DataTableProps<TData> {
     deleteTooltipTitle: string,
     warningDialogTitle: string,
     warningDialogText: string,
-    deleteFn: ({id, accessToken, prefixUrl}: DeleteFnParams) => Promise<AxiosResponse<string, ValidationError>>,
-    onDeleteSuccess: (res: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => void,
+    deleteFn: ({id, accessToken, prefixUrl}: IDeleteFnParams) => Promise<AxiosResponse<string, IValidationError>>,
+    onDeleteSuccess: (res: AxiosResponse<string, IValidationError>, variables: IDeleteFnParams) => void,
     onDeleteError: () => void
     onCreateBtnClick: () => void,
     headCells: HeadCell<TData>[]
@@ -109,7 +109,7 @@ export default function DataTable<TData extends { id: string }>({
 
     const mutation = useMutation( {
         mutationFn: deleteFn,
-        onSuccess: (data: AxiosResponse<string, ValidationError>, variables: DeleteFnParams) => {
+        onSuccess: (data: AxiosResponse<string, IValidationError>, variables: IDeleteFnParams) => {
             setSelected([])
             setOpenDialog(false)
             onDeleteSuccess(data, variables)

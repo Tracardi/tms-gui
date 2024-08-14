@@ -1,7 +1,7 @@
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import ConnectionGauge from "./connectionGauge.tsx";
-import {CircularProgress, SelectChangeEvent} from "@mui/material";
+import {CircularProgress} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import BacklogCard from "./backlogCard.tsx";
 import DashboardNavbar from "./dashboardNavbar.tsx";
@@ -11,19 +11,14 @@ import {AxiosResponse} from "axios";
 import {IValidationError} from "../../types/api/api";
 import SubscriptionsList from "./subscriptionsList.tsx";
 import Box from "@mui/material/Box";
+import {IRefreshData, IStatsPanel} from "../../types/ui/statsPanel";
 
-interface IStatsPanel {
-    status: "success" | "pending" | "error",
-    fetchStatus: "fetching" | "idle" | "paused"
-    data: AxiosResponse<IQueueStats, IValidationError> | undefined,
+interface IQueueStatsPanel extends IStatsPanel<AxiosResponse<IQueueStats, IValidationError> | undefined> {
     maxRate: number,
-    refreshData: {
-        time: number,
-        onChange: (e: SelectChangeEvent<number>) => void
-    }
+    refreshData: IRefreshData
 }
 
-export default function StatsPanel({data, status, maxRate, refreshData, fetchStatus}: IStatsPanel) {
+export default function QueueStatsPanel({data, status, maxRate, refreshData, fetchStatus}: IQueueStatsPanel) {
 
     if (status == "pending") {
         return (

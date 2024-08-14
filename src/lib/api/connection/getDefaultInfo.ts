@@ -1,6 +1,6 @@
-import {fetchWithToken} from "../fetchWithToken.ts";
+import {fetchWithToken} from "../../fetchWithToken.ts";
 
-interface IGetDefaultInfo {
+export interface IGetDefaultInfo {
     prefixUrl: string,
     accessToken: string
 }

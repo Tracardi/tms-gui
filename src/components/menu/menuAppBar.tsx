@@ -1,9 +1,10 @@
-import {AppBar} from "@mui/material";
+import {AppBar, Chip, Stack} from "@mui/material";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import {MdMenu} from "react-icons/md";
 import {useTheme} from "@mui/material/styles";
 import ThemeSwitch from "../themeSwitch.tsx";
+import useApiAuthContext from "../../hooks/useApiAuthContext.ts";
 
 interface MainAppBarProps {
     open: boolean,
@@ -14,6 +15,9 @@ interface MainAppBarProps {
 export default function MenuAppBar({open, handleDrawerOpen, drawerWidth}: MainAppBarProps) {
 
     const theme = useTheme()
+    const {apiPrefix} = useApiAuthContext()
+
+    const {common} = theme.palette
 
     const appBarSX = {
         transition: theme.transitions.create(['width', 'margin'], {
@@ -39,7 +43,10 @@ export default function MenuAppBar({open, handleDrawerOpen, drawerWidth}: MainAp
                             sx={{marginRight: 5, ...(open && {display: 'none'})}}>
                     <MdMenu/>
                 </IconButton>
-                <ThemeSwitch/>
+                <Stack direction="row" alignItems="center" gap="2rem" sx={{marginLeft: "auto",}}>
+                    <Chip sx={{color: common.white, fontWeight: "500"}} label={apiPrefix}/>
+                    <ThemeSwitch/>
+                </Stack>
             </Toolbar>
         </AppBar>
     )

@@ -1,7 +1,7 @@
 import {Stack} from "@mui/material";
 import SourceConnectionCard from "./sourceConnectionCard.tsx";
 import Paper from "@mui/material/Paper";
-import {ISource} from "../../pages/dashboardPage.tsx";
+import {ISource} from "../../../pages/dashboardPage.tsx";
 
 interface ISourcesPanel {
     sources: ISource[],

@@ -1,16 +1,12 @@
 import Box from "@mui/material/Box";
 import {useEffect, useMemo, useState} from "react";
-import QueueStatsPanel from "../components/dashboard/queueStatsPanel.tsx";
 import useConnection from "../lib/api/connection/useConnection.ts";
 import {getQueueStats} from "../lib/api/queue/getQueueStats.ts";
-import {useQuery} from "@tanstack/react-query";
-import useApiAuthContext from "../hooks/useApiAuthContext.ts";
-import SourcesPanel from "../components/dashboard/sourcesPanel.tsx";
-import {SelectChangeEvent} from "@mui/material";
-import {getDefaultInfo} from "../lib/api/connection/getDefaultInfo.ts";
+import SourcesPanel from "../components/dashboard/sources/sourcesPanel.tsx";
 import {getRedisInfo} from "../lib/api/connection/getRedisInfo.ts";
-import {useSearchParams} from "react-router-dom";
-import ElasticsearchStatsPanel from "../components/dashboard/elasticsearchStatsPanel.tsx";
+import {Outlet, useLocation, useNavigate, useSearchParams} from "react-router-dom";
+import {getElasticsearchInfo} from "../lib/api/connection/getElasticsearchInfo.ts";
+import Paper from "@mui/material/Paper";
 
 export interface ISource {
     label: string,
@@ -21,73 +17,51 @@ export interface ISource {
 
 export default function DashboardPage() {
 
-    const {apiPrefix, accessToken} = useApiAuthContext()
-    const [refetchInterval, setRefetchInterval] = useState(10000)
-    const refreshData = {
-        time: refetchInterval,
-        onChange: (e: SelectChangeEvent<number>) => {
-            setRefetchInterval(e.target.value as number)
-        }
-    }
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [searchParams, setSearchParams] = useSearchParams()
 
     const {status: queueStatus, testConnection: testQueue} = useConnection({mutationFn: getQueueStats})
-    const {status: elasticsearchStatus, testConnection: testElasticsearch} = useConnection({mutationFn: getDefaultInfo})
+    const {
+        status: elasticsearchStatus,
+        testConnection: testElasticsearch
+    } = useConnection({mutationFn: getElasticsearchInfo})
     const {status: redisStatus, testConnection: testRedis} = useConnection({mutationFn: getRedisInfo})
-
-    const {
-        data: queueStatsPanelResponse,
-        status: queueStatsPanelStatus,
-        fetchStatus: queueStatsPanelFetchStatus
-    } = useQuery({
-        queryKey: ["queueStats"], queryFn: () => {
-            return getQueueStats({prefixUrl: apiPrefix, accessToken})
-        }, refetchInterval
-    })
-
-    const {
-        data: elasticsearchStatsResponse,
-        status: elasticsearchStatsStatus,
-        fetchStatus: elasticsearchStatsFetchStatus
-    } = useQuery({
-        queryKey: ["elasticsearchStats"], queryFn: () => {
-            return getDefaultInfo({prefixUrl: apiPrefix, accessToken})
-        }, refetchInterval
-    })
 
     const
         baseSources: ISource[] = useMemo(() => {
             return [{
-                label: "Elasticsearch",
+                label: "elasticsearch",
                 connectionStatus: elasticsearchStatus,
                 testConnection: testElasticsearch,
                 isClickable: true
             }, {
-                label: "Queue",
+                label: "queue",
                 connectionStatus: queueStatus,
                 testConnection: testQueue,
                 isClickable: true
             }, {
-                label: "Redis",
+                label: "redis",
                 connectionStatus: redisStatus,
                 testConnection: testRedis,
                 isClickable: false
             }]
         }, [queueStatus, redisStatus, elasticsearchStatus])
+
     const [sources, setSources] = useState<ISource[]>(baseSources)
 
-    const [searchParams, setSearchParams] = useSearchParams()
     const defaultSelectedSource = baseSources[0].label
+    const defaultRefreshTime = 10000
 
-    if (!searchParams.get("source")) {
-        setSearchParams(prev => {
-            return {
-                ...prev,
-                source: defaultSelectedSource
-            }
-        })
+    if (location.pathname === "/") {
+        navigate(`/${defaultSelectedSource}`)
     }
 
-    const selectedSource = searchParams.get("source")
+    if (!searchParams.has("refreshTime")) {
+        setSearchParams(prev => {
+            return {...prev, "refreshTime": defaultRefreshTime}
+        })
+    }
 
     useEffect(() => {
         setSources(baseSources)
@@ -96,13 +70,18 @@ export default function DashboardPage() {
     return (
         <Box sx={{m: 0, p: 2, width: "100%", height: "100%", display: "flex", gap: "2rem"}}>
             <SourcesPanel sources={sources}/>
-            {selectedSource === "Queue" &&
-                <QueueStatsPanel status={queueStatsPanelStatus} data={queueStatsPanelResponse} maxRate={10000}
-                                 refreshData={refreshData}
-                                 fetchStatus={queueStatsPanelFetchStatus}/>}
-            {selectedSource == "Elasticsearch" &&
-                <ElasticsearchStatsPanel status={elasticsearchStatsStatus} fetchStatus={elasticsearchStatsFetchStatus}
-                                         data={elasticsearchStatsResponse} refreshData={refreshData}/>}
+            <Paper sx={{
+                minWidth: "500px",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                flex: "1 0 0",
+                overflow: "scroll",
+                padding: "0 2rem 1rem 2rem",
+                gap: "1rem",
+            }}>
+                <Outlet/>
+            </Paper>
         </Box>
     )
 }

@@ -37,7 +37,7 @@ export default function ConnectionGauge({label, rate, throughput, maxRate}: ICon
     }
 
     return (
-        <DashboardPaperCard sx={{padding: "0.6rem 0"}}>
+        <DashboardPaperCard sx={{padding: "0.6rem 0", minWidth: "300px"}}>
             <Stack alignItems={"center"}>
                 <Typography variant={"subtitle1"}>{label}</Typography>
                 <GaugeComponent value={rate} maxValue={maxRate} arc={arc} labels={{

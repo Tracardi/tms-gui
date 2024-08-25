@@ -1,8 +1,8 @@
-import {ISubscription} from "../../types/api/queue";
+import {ISubscription} from "../../../types/api/queue";
 import {Stack} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import {abbreviateNumber} from "../../lib/converters.ts";
-import DashboardPaperCard from "../ui/dashboardPaperCard.tsx";
+import {abbreviateNumber} from "../../../lib/converters.ts";
+import DashboardPaperCard from "../../ui/dashboardPaperCard.tsx";
 
 interface IBacklogCard {
     subscriptions: {

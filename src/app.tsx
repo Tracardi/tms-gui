@@ -6,11 +6,12 @@ import ApiSelectorPage from "./pages/apiSelectorPage.tsx";
 import {darkTheme, lightTheme} from "./lib/theme.ts";
 import useApiAuthContext from "./hooks/useApiAuthContext.ts";
 import useThemeModeContext from "./hooks/useThemeModeContext.ts";
-import TenantsPage from "./pages/tenantsPage.tsx";
 import DashboardPage from "./pages/dashboardPage.tsx";
 import QueueStatsPanel from "./components/dashboard/queue/queueStatsPanel.tsx";
 import ElasticsearchStatsPanel from "./components/dashboard/elasticsearch/elasticsearchStatsPanel.tsx";
 import RedisStatsPanel from "./components/dashboard/redis/redisStatsPanel.tsx";
+import LicencesPage from "./pages/licencesPage.tsx";
+import TenantsPage from "./pages/tenantsPage.tsx";
 
 export default function App() {
 
@@ -47,7 +48,7 @@ export default function App() {
                 },
                 {
                     path: "/licenses",
-                    element: <div>TO DO licenses</div>
+                    element: <LicencesPage/>
                 }
             ]
         }

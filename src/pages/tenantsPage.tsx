@@ -1,132 +1,103 @@
-import {CircularProgress} from "@mui/material";
-import useApiAuthContext from "../hooks/useApiAuthContext.ts";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {getTenants} from "../lib/api/tenant/getTenants.ts";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import {useState} from "react";
-import {IDeleteFnParams, IValidationError} from "../types/api/api";
+import {Box} from "@mui/material";
+import {DataTable} from "mui-table-widget"
 import {ITenant} from "../types/api/tenant";
-import {AxiosResponse} from "axios";
-import TenantsTable from "../components/tables/tenantsTable.tsx";
-import TenantDetailsDialog from "../components/dialogs/tenantDetailsDialog.tsx";
-import SnackbarWithAlert from "../components/snackbarWithAlert.tsx";
-import {SnackbarData} from "../types/ui/snackbar";
-import Paper from "@mui/material/Paper";
+import StatusWrapper from "../components/dashboard/statusWrapper.tsx";
+import useTenantsData from "../hooks/useTenantsData.ts";
+import TenantFormDialog from "../components/dialogs/tenantFormDialog.tsx";
+import TenantDeleteDialog from "../components/dialogs/tenantDeleteDialog.tsx";
+
+interface HeadCell<TData> {
+    disablePadding: boolean;
+    id: keyof TData;
+    label: string;
+    dataFormat: "string" | "numeric" | "date";
+}
 
 export default function TenantsPage() {
 
-    const {apiPrefix, accessToken} = useApiAuthContext()
-    const queryClient = useQueryClient()
+    const {
+        status,
+        data,
+        selectedIds,
+        selectedTenant,
+        setSelectedIds,
+        setSelectedTenant,
+        createTenantHandler,
+        deleteTenantHandler, createMutation, deleteMutation,
+        dialogOptions, openDialog, closeDialog
+    } = useTenantsData()
 
-    const [currentTenant, setCurrentTenant] = useState<ITenant | null>(null)
-    const [openDetails, setOpenDetails] = useState(false)
-    const [openSnackbar, setOpenSnackbar] = useState(false)
-    const [snackbarData, setSnackbarData] = useState<SnackbarData>({
-        content: "",
-        severity: "success"
-    })
-
-    const handleTenantDeletion = (_res: AxiosResponse<string, IValidationError>, variables: IDeleteFnParams) => {
-        const {id} = variables
-
-        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<ITenant[], IValidationError>) => {
-            const tenants = queryData.data
-            const filteredTenants = tenants.filter(tenant => tenant.id !== id)
-
-            return {
-                ...queryData,
-                data: filteredTenants
-            }
-        })
-
-
-        setSnackbarData({
-            content: "Successfully deleted tenant",
-            severity: "success"
-        })
-        setOpenSnackbar(true)
+    if (status !== "success") {
+        return <StatusWrapper status={status}/>
     }
 
-    const handleTenantDeletionError = () => {
-        setSnackbarData({
-            content: "Could not delete tenant/s",
-            severity: "error"
-        })
-        setOpenSnackbar(true)
-    }
-
-    const handleOpenTenantDetails = () => {
-        setCurrentTenant(null)
-        setOpenDetails(true)
-    }
-
-    const handleTenantsUpdate = (res: AxiosResponse<ITenant, IValidationError>) => {
-        queryClient.setQueryData(["tenants"], (queryData: AxiosResponse<ITenant[], IValidationError>) => {
-            const tenants = queryData.data
-            const filteredTenants = tenants.filter(tenant => tenant.id !== res.data.id)
-
-            return {
-                ...queryData,
-                data: [...filteredTenants, res.data]
-            }
-        })
-
-        setOpenDetails(false)
-        setSnackbarData({
-            content: "Successfully created/updated tenant",
-            severity: "success"
-        })
-        setOpenSnackbar(true)
-    }
-
-    const handleTenantsUpdateError = () => {
-        setSnackbarData({
-            content: "Could not create/update tenant",
-            severity: "error"
-        })
-        setOpenSnackbar(true)
-    }
-
-    const handleRowClick = (tenant: ITenant) => {
-        setCurrentTenant(tenant)
-        setOpenDetails(true)
-    }
-
-    const {data, status, error,} = useQuery({
-        queryKey: ["tenants"], queryFn: () => {
-            return getTenants({prefixUrl: apiPrefix, accessToken: accessToken})
+    const tenants = data!.data
+    const headCells: HeadCell<ITenant>[] = [
+        {
+            disablePadding: false,
+            id: "id",
+            label: "ID",
+            dataFormat: "string",
+        }, {
+            id: "name",
+            disablePadding: false,
+            label: "Name",
+            dataFormat: "string",
+        }, {
+            id: "email",
+            disablePadding: false,
+            label: "Email",
+            dataFormat: "string",
+        }, {
+            id: "install_token",
+            disablePadding: false,
+            label: "Install Token",
+            dataFormat: "string",
+        }, {
+            id: "created",
+            disablePadding: false,
+            label: "Created",
+            dataFormat: "date",
         },
-    })
+        {
+            id: "expire",
+            disablePadding: false,
+            label: "Expire",
+            dataFormat: "date",
+        },
+    ]
 
-    if (status === "pending") {
-        return (<Box sx={{m: 0, p: 2, width: "100%", display: "flex", justifyContent: "center"}}>
-            <CircularProgress/>
-        </Box>)
+    const onCreateClick = () => {
+        setSelectedTenant(null)
+        openDialog("form")
     }
 
-    if (status === "error") {
-        const errorText = error.message
-
-        return (<Box sx={{m: 0, p: 2, width: "100%", display: "flex", alignItems: "center", flexDirection: "column"}}>
-            <Paper sx={{p: 3, textAlign: "center", display: "flex", gap: "0.8rem", flexDirection: "column"}}>
-                <Typography component="h3" variant="h5">Something Went Wrong</Typography>
-                <Typography component="p">Details: {errorText}</Typography>
-            </Paper>
-        </Box>)
+    const onDeleteClick = () => {
+        openDialog("delete")
     }
 
-    const tenants = data?.data
+    const onRowClick = (tenant: ITenant) => {
+        setSelectedTenant(tenant)
+        openDialog("form")
+    }
+
+    const createComponent = (
+        <TenantFormDialog open={dialogOptions.open && dialogOptions.selected === "form"} onClose={closeDialog}
+                          onUpdate={createTenantHandler} data={selectedTenant} isPending={createMutation.isPending}/>
+    )
+
+    const deleteComponent = (
+        <TenantDeleteDialog onDelete={deleteTenantHandler} onClose={closeDialog} isPending={deleteMutation.isPending}
+                            open={dialogOptions.open && dialogOptions.selected === "delete"}/>
+    )
 
     return (
-        <Box sx={{m: 0, p: 2, width: "100%"}}>
-            <TenantsTable data={tenants} onRowClick={handleRowClick} onCreateBtnClick={handleOpenTenantDetails}
-                          onDeleteSuccess={handleTenantDeletion} onDeleteError={handleTenantDeletionError}/>
-            <TenantDetailsDialog open={openDetails} onClose={() => setOpenDetails(false)} value={currentTenant}
-                                 onSuccess={handleTenantsUpdate} onError={handleTenantsUpdateError}/>
-            <SnackbarWithAlert open={openSnackbar} handleClose={() => {
-                setOpenSnackbar(false)
-            }} snackbarData={snackbarData} origin={{vertical: "bottom", horizontal: "right"}}/>
+        <Box sx={{p: 2}}>
+            <DataTable data={tenants} title={"Tenants Table"} selected={selectedIds}
+                       setSelected={setSelectedIds} onDeleteClick={onDeleteClick} onCreateClick={onCreateClick}
+                       createComponent={createComponent}
+                       deleteComponent={deleteComponent} onRowClick={onRowClick} headCells={headCells}
+            />
         </Box>
     )
 }

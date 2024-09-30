@@ -1,22 +1,38 @@
-FROM node:16
+# Stage 1: Build the React app
+FROM node:21 AS build
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
 
-# Install pnpm
+# Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy package.json and pnpm-lock.yaml (or just package.json) into the working directory
+# Copy package.json and pnpm-lock.yaml to install dependencies
 COPY package.json pnpm-lock.yaml ./
 
-# Install project dependencies using pnpm
-RUN pnpm install
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-# Copy the rest of your application's code
+# Copy the rest of the application code
 COPY . .
 
-# Build the app using Vite
-RUN pnpm run build
+# Optionally, add environment variables here
+# ENV VITE_API_URL=https://api.example.com
 
-# Start the app using Vite's production server
-CMD ["pnpm", "run", "serve"]
+# Clear cache before build to avoid caching issues
+RUN pnpm store prune
+
+# Build the application and add debug step to check files
+RUN pnpm run build || (echo "Build failed. Listing files for debugging:" && ls -la && exit 1)
+
+# Stage 2: Serve the production build with Nginx
+FROM nginx:stable-alpine
+
+# Copy the built React app from the first stage to the Nginx html folder
+COPY --from=build /usr/src/app/dist /usr/share/nginx/html
+
+# Expose the default Nginx port
+EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]

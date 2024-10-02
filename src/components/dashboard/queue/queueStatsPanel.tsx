@@ -77,7 +77,7 @@ export default function QueueStatsPanel() {
                 width: "100%",
                 minHeight: "300px",
                 flex: "1 0 0",
-                overflow: "scroll"
+                overflow: "auto"
             }}>
                 <Collapse in={show}>
                     <SubscriptionsList subscriptions={statsData.subscriptions}/>

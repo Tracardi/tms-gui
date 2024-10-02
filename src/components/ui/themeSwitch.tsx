@@ -1,6 +1,6 @@
 import {Switch} from "@mui/material";
 import Box from "@mui/material/Box";
-import useThemeModeContext from "../hooks/useThemeModeContext.ts";
+import useThemeModeContext from "../../hooks/useThemeModeContext.ts";
 import {MdSunny} from "react-icons/md";
 import {IoMdMoon} from "react-icons/io";
 

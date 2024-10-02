@@ -3,7 +3,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import {MdMenu} from "react-icons/md";
 import {useTheme} from "@mui/material/styles";
-import ThemeSwitch from "../themeSwitch.tsx";
+import ThemeSwitch from "../ui/themeSwitch.tsx";
 import useApiAuthContext from "../../hooks/useApiAuthContext.ts";
 
 interface MainAppBarProps {

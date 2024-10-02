@@ -15,7 +15,7 @@ export default function ElasticsearchClusterList({data}: IEsClusterList) {
             width: "100%",
             flex: "1 0 0",
             padding: "1rem 2rem",
-            overflow: "scroll"
+            overflow: "auto"
         }} data={data} title="Elasticsearch Info"/>
     )
 }

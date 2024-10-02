@@ -76,7 +76,7 @@ export default function DashboardPage() {
                 display: "flex",
                 flexDirection: "column",
                 flex: "1 0 0",
-                overflow: "scroll",
+                overflow: "auto",
                 padding: "0 2rem 1rem 2rem",
                 gap: "1rem",
             }}>

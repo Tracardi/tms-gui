@@ -47,7 +47,7 @@ export default function RedisStatsPanel() {
                 width: "100%",
                 flex: "1 0 0",
                 padding: "1rem 2rem",
-                overflow: "scroll"
+                overflow: "auto"
             }} data={data.data} propertiesDescription={redisMemoryMetrics} title="Redis info"/>
         </>
     )

@@ -5,13 +5,8 @@ import StatusWrapper from "../components/dashboard/statusWrapper.tsx";
 import useTenantsData from "../hooks/useTenantsData.ts";
 import TenantFormDialog from "../components/dialogs/tenantFormDialog.tsx";
 import TenantDeleteDialog from "../components/dialogs/tenantDeleteDialog.tsx";
+import {HeadCell} from "../types/ui/table";
 
-interface HeadCell<TData> {
-    disablePadding: boolean;
-    id: keyof TData;
-    label: string;
-    dataFormat: "string" | "numeric" | "date";
-}
 
 export default function TenantsPage() {
 

@@ -1,4 +1,3 @@
-import useApiAuthContext from "./useApiAuthContext.ts";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {getTenants} from "../lib/api/tenant/getTenants.ts";
 import {useState} from "react";
@@ -9,7 +8,6 @@ import useDialogOptions from "./useDialogOptions.ts";
 
 export default function useTenantsData() {
 
-    const {apiPrefix, accessToken} = useApiAuthContext()
     const {dialogOptions, closeDialog, openDialog} = useDialogOptions()
     const [selectedIds, setSelectedIds] = useState<string[]>([])
     const [selectedTenant, setSelectedTenant] = useState<ITenant | null>(null)
@@ -17,7 +15,7 @@ export default function useTenantsData() {
     const queryClient = useQueryClient()
     const {data, status, error} = useQuery({
         queryKey: ["tenants"], queryFn: () => {
-            return getTenants({prefixUrl: apiPrefix, accessToken: accessToken})
+            return getTenants()
         },
     })
 
@@ -47,8 +45,6 @@ export default function useTenantsData() {
 
     const createTenantHandler = (tenant: ITenant) => {
         createTenantMutation.mutate({
-            accessToken,
-            prefixUrl: apiPrefix,
             body: tenant
         })
     }
@@ -57,8 +53,6 @@ export default function useTenantsData() {
         selectedIds.forEach(id => {
             deleteTenantMutation.mutate({
                 id,
-                accessToken,
-                prefixUrl: apiPrefix
             })
         })
         setSelectedIds([])

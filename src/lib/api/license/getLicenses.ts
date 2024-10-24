@@ -3,14 +3,6 @@ import {AxiosResponse} from "axios";
 import {ILicense} from "../../../types/api/license";
 import {IValidationError} from "../../../types/api/api";
 
-interface GetLicenseParams {
-    prefixUrl: string,
-    accessToken: string
-}
-
-export function getLicenses({
-                                prefixUrl,
-                                accessToken
-                            }: GetLicenseParams): Promise<AxiosResponse<ILicense[], IValidationError>> {
-    return fetchWithToken({url: `${prefixUrl}/license`, accessToken})
+export function getLicenses(): Promise<AxiosResponse<ILicense[], IValidationError>> {
+    return fetchWithToken('/license')
 }

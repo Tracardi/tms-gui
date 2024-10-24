@@ -8,8 +8,9 @@ export default function useRefreshTime() {
     }
 
     const setRefreshTime = (time: number | string) => {
-        setSearchParams(prev => {
-            return {...prev, "refreshTime": time}
+        setSearchParams(params => {
+            params.set("refreshTime", time.toString())
+            return params
         })
     }
 

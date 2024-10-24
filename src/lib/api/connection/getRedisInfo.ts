@@ -1,8 +1,7 @@
 import {fetchWithToken} from "../../fetchWithToken.ts";
-import {IGetDefaultInfo} from "./getDefaultInfo.ts";
 
-export function getRedisInfo({prefixUrl, accessToken}: IGetDefaultInfo) {
-    const url = `${prefixUrl}/redis/info`
+export function getRedisInfo() {
+    const url = "/redis/info"
 
-    return fetchWithToken({url, accessToken})
+    return fetchWithToken(url)
 }

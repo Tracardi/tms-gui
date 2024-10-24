@@ -1,16 +1,13 @@
 import axios from "axios";
 
-interface FetchWithTokenParams {
-    url: string
-    accessToken: string,
-    options?: object,
-}
+export function fetchWithToken(url: string, options?: object) {
 
-export function fetchWithToken({url, accessToken, options}: FetchWithTokenParams) {
+    const accessToken = localStorage.getItem("accessToken") || ""
+    const apiPrefix = localStorage.getItem("apiPrefix") || ""
 
     const config = {
         ...options,
-        url: url,
+        url: apiPrefix + url,
         headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`

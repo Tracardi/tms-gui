@@ -1,4 +1,3 @@
-import useApiAuthContext from "../../../hooks/useApiAuthContext.ts";
 import useRefreshTime from "../../../hooks/useRefreshTime.ts";
 import {SelectChangeEvent} from "@mui/material";
 import {useQuery} from "@tanstack/react-query";
@@ -11,8 +10,6 @@ import DashboardList from "../dashboardList.tsx";
 import {redisMemoryMetrics} from "../../../lib/configs/redisMemoryMetrics.ts";
 
 export default function RedisStatsPanel() {
-
-    const {apiPrefix, accessToken} = useApiAuthContext()
     const {getRefreshTime, setRefreshTime} = useRefreshTime()
 
     const refreshData = {
@@ -28,7 +25,7 @@ export default function RedisStatsPanel() {
         fetchStatus
     } = useQuery({
         queryKey: ["redisStats"], queryFn: () => {
-            return getRedisInfo({prefixUrl: apiPrefix, accessToken})
+            return getRedisInfo()
         }, refetchInterval: refreshData.time
     })
 

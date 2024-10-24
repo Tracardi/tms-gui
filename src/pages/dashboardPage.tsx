@@ -7,6 +7,7 @@ import {getRedisInfo} from "../lib/api/connection/getRedisInfo.ts";
 import {Outlet, useLocation, useNavigate, useSearchParams} from "react-router-dom";
 import {getElasticsearchInfo} from "../lib/api/connection/getElasticsearchInfo.ts";
 import Paper from "@mui/material/Paper";
+import {defaultQueueNamespace, defaultQueueTopic, defaultRefreshTime} from "../lib/constants.ts";
 
 export interface ISource {
     label: string,
@@ -28,8 +29,7 @@ export default function DashboardPage() {
     } = useConnection({mutationFn: getElasticsearchInfo})
     const {status: redisStatus, testConnection: testRedis} = useConnection({mutationFn: getRedisInfo})
 
-    const
-        baseSources: ISource[] = useMemo(() => {
+    const baseSources: ISource[] = useMemo(() => {
             return [{
                 label: "elasticsearch",
                 connectionStatus: elasticsearchStatus,
@@ -47,19 +47,24 @@ export default function DashboardPage() {
                 isClickable: false
             }]
         }, [queueStatus, redisStatus, elasticsearchStatus])
-
     const [sources, setSources] = useState<ISource[]>(baseSources)
-
     const defaultSelectedSource = baseSources[0].label
-    const defaultRefreshTime = 10000
 
     if (location.pathname === "/") {
         navigate(`/${defaultSelectedSource}`)
     }
 
+    if (!searchParams.has("topic")) {
+        setSearchParams(params => {
+            params.set("topic", `${defaultQueueNamespace}/${defaultQueueTopic}`)
+            return params
+        })
+    }
+
     if (!searchParams.has("refreshTime")) {
-        setSearchParams(prev => {
-            return {...prev, "refreshTime": defaultRefreshTime}
+        setSearchParams(params => {
+            params.set("refreshTime", defaultRefreshTime.toString())
+            return params
         })
     }
 

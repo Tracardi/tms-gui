@@ -10,6 +10,4 @@ export interface IValidationError {
 
 export interface IDeleteFnParams {
     id: string,
-    accessToken: string,
-    prefixUrl: string
 }

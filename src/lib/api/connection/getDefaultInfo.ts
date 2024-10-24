@@ -1,12 +1,7 @@
 import {fetchWithToken} from "../../fetchWithToken.ts";
 
-export interface IGetDefaultInfo {
-    prefixUrl: string,
-    accessToken: string
-}
+export function getDefaultInfo() {
+    const url = `/`
 
-export function getDefaultInfo({prefixUrl, accessToken}: IGetDefaultInfo) {
-    const url = `${prefixUrl}/`
-
-    return fetchWithToken({url, accessToken})
+    return fetchWithToken(url)
 }

@@ -5,13 +5,10 @@ import Divider from "@mui/material/Divider";
 import ElasticsearchClusterList from "./elasticsearchClusterList.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {getElasticsearchInfo} from "../../../lib/api/connection/getElasticsearchInfo.ts";
-import useApiAuthContext from "../../../hooks/useApiAuthContext.ts";
 import useRefreshTime from "../../../hooks/useRefreshTime.ts";
 import StatusWrapper from "../statusWrapper.tsx";
 
 export default function ElasticsearchStatsPanel() {
-
-    const {apiPrefix, accessToken} = useApiAuthContext()
     const {getRefreshTime, setRefreshTime} = useRefreshTime()
 
     const refreshData = {
@@ -27,7 +24,7 @@ export default function ElasticsearchStatsPanel() {
         fetchStatus
     } = useQuery({
         queryKey: ["elasticsearchStats"], queryFn: () => {
-            return getElasticsearchInfo({prefixUrl: apiPrefix, accessToken})
+            return getElasticsearchInfo()
         }, refetchInterval: refreshData.time
     })
 

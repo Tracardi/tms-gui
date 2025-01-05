@@ -13,7 +13,8 @@ export default function SourcesPanel({sources}: ISourcesPanel) {
         <Paper square={false} sx={{minWidth: "360px", height: "100%", padding: "1rem"}}>
             <Stack spacing={2}>
                 {sources.map((source) => {
-                    return <SourceConnectionCard key={source.label} label={source.label}
+                    return <SourceConnectionCard key={source.label}
+                                                 label={source.label}
                                                  connectionStatus={source.connectionStatus}
                                                  onBtnClick={() => {
                                                      source.testConnection()

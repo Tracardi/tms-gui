@@ -18,4 +18,5 @@ export interface ISubscription {
     consumers: unknown[]
     isDurable: boolean
     isReplicated: boolean
+    allowOutOfOrderDelivery: boolean
 }

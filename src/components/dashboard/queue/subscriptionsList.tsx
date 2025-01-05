@@ -8,6 +8,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import {Fragment, useState} from "react";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import DashboardPaperCard from "../../ui/dashboardPaperCard.tsx";
+import {abbreviateSize} from "../../../lib/converters";
 
 interface ISubscriptionsList {
     subscriptions: {
@@ -42,8 +43,12 @@ export default function SubscriptionsList({subscriptions}: ISubscriptionsList) {
             <Collapse in={open && subscriptionName === name} timeout="auto" unmountOnExit>
                 <List sx={{bgcolor: palette.background.paper}} component="div" disablePadding>
                     <ListItem sx={collapseListItemStyles}>
+                        <ListItemText primary="Subscribtion type"/>
+                        <ListItemText sx={{textAlign: "right"}} primary={subscription.type}/>
+                    </ListItem>
+                    <ListItem sx={collapseListItemStyles}>
                         <ListItemText primary="Backlog size"/>
-                        <ListItemText sx={{textAlign: "right"}} primary={subscription.backlogSize}/>
+                        <ListItemText sx={{textAlign: "right"}} primary={abbreviateSize(subscription.backlogSize)}/>
                     </ListItem>
                     <ListItem sx={collapseListItemStyles}>
                         <ListItemText primary="Delayed messages in backlog"/>
@@ -53,10 +58,7 @@ export default function SubscriptionsList({subscriptions}: ISubscriptionsList) {
                         <ListItemText primary="Unack messages"/>
                         <ListItemText sx={{textAlign: "right"}} primary={subscription.unackedMessages}/>
                     </ListItem>
-                    <ListItem sx={collapseListItemStyles}>
-                        <ListItemText primary="Subscribtion type"/>
-                        <ListItemText sx={{textAlign: "right"}} primary={subscription.type}/>
-                    </ListItem>
+
                     <ListItem sx={collapseListItemStyles}>
                         <ListItemText primary="Consumers"/>
                         <ListItemText sx={{textAlign: "right"}} primary={subscription.consumers.length}/>
@@ -69,6 +71,11 @@ export default function SubscriptionsList({subscriptions}: ISubscriptionsList) {
                         <ListItemText primary="Replicated"/>
                         <ListItemText sx={{textAlign: "right"}} primary={`${subscription.isReplicated}`}/>
                     </ListItem>
+                    <ListItem sx={collapseListItemStyles}>
+                        <ListItemText primary="Out of Order Delivery"/>
+                        <ListItemText sx={{textAlign: "right"}} primary={`${subscription.allowOutOfOrderDelivery}`}/>
+                    </ListItem>
+
                 </List>
             </Collapse>
         </Fragment>)

@@ -18,3 +18,31 @@ export function abbreviateNumber(value: number | string) {
 
     return round(newValue, 3).toString() + " " + suffix
 }
+
+export function abbreviateSize(bytes) {
+    const KB = 1024;
+    const MB = KB * 1024;
+    const GB = MB * 1024;
+
+    let formattedSize = bytes; // Start with bytes
+    let unit = "Bytes"; // Default unit
+
+    if (bytes >= GB) {
+        formattedSize = bytes / GB;
+        unit = "GB";
+    } else if (bytes >= MB) {
+        formattedSize = bytes / MB;
+        unit = "MB";
+    } else if (bytes >= KB) {
+        formattedSize = bytes / KB;
+        unit = "KB";
+    }
+
+    // Ensure the value is > 1
+    if (formattedSize < 1) {
+        formattedSize = 1;
+    }
+
+    // Format to 2 decimal places and return with unit
+    return `${formattedSize.toFixed(2)} ${unit}`;
+}

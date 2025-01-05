@@ -9,6 +9,7 @@ import {Fragment, useState} from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import {ExpandLess, ExpandMore} from "@mui/icons-material";
 import {useTheme} from "@mui/material/styles";
+import {abbreviateSize} from "../../lib/converters";
 
 type Data = {
     [key: string]: string | number | boolean | object
@@ -66,8 +67,11 @@ export default function DashboardList({data, title, sx, propertiesDescription}: 
                 listItems.push(item)
                 continue
             }
-
-            keyData = keyData.toString()
+            if(keyData > 1000) {
+                keyData = abbreviateSize(keyData)
+            } else {
+                keyData = keyData.toString()
+            }
 
             const item = <Fragment key={key}>
                 <Divider/>

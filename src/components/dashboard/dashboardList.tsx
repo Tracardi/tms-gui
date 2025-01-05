@@ -67,7 +67,7 @@ export default function DashboardList({data, title, sx, propertiesDescription}: 
                 listItems.push(item)
                 continue
             }
-            if(keyData > 1000) {
+            if(typeof keyData === "number" && keyData > 1000) {
                 keyData = abbreviateSize(keyData)
             } else {
                 keyData = keyData.toString()

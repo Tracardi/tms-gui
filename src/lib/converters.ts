@@ -19,7 +19,7 @@ export function abbreviateNumber(value: number | string) {
     return round(newValue, 3).toString() + " " + suffix
 }
 
-export function abbreviateSize(bytes) {
+export function abbreviateSize(bytes: number): string {
     const KB = 1024;
     const MB = KB * 1024;
     const GB = MB * 1024;
